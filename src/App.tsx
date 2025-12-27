@@ -854,7 +854,7 @@ const PhotoGrid = () => {
 
 
 // ============================================
-// RSVP SECTION - Book Your Seat
+// RSVP SECTION - Book Your Seat (Playful & Enthusiastic)
 // ============================================
 const RSVPSection = () => {
   return (
@@ -866,54 +866,103 @@ const RSVPSection = () => {
     >
       <div className="max-w-2xl mx-auto text-center">
         <motion.div
-          className="bg-gradient-to-br from-sky-500 to-sky-600 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"
+          className="bg-gradient-to-br from-amber-400 via-orange-400 to-pink-500 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"
           whileHover={{ scale: 1.02 }}
         >
-          {/* Background clouds */}
-          <div className="absolute inset-0 pointer-events-none opacity-20">
-            {[...Array(4)].map((_, i) => (
-              <Cloud
+          {/* Confetti decorations */}
+          <div className="absolute inset-0 pointer-events-none">
+            {['🎈', '🎉', '✨', '🎊', '⭐', '🎁', '🎂', '🥳'].map((emoji, i) => (
+              <motion.span
                 key={i}
-                className="absolute text-white"
+                className="absolute text-2xl"
                 style={{
-                  left: `${i * 25}%`,
-                  top: `${20 + (i % 2) * 40}%`,
-                  width: '80px',
-                  height: '50px',
+                  left: `${10 + (i * 12)}%`,
+                  top: `${10 + (i % 3) * 30}%`,
                 }}
-                fill="currentColor"
-              />
+                animate={{
+                  y: [0, -15, 0],
+                  rotate: [0, 10, -10, 0],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                }}
+              >
+                {emoji}
+              </motion.span>
             ))}
           </div>
 
+          {/* Excited plane animation */}
           <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            animate={{
+              y: [0, -15, 0],
+              rotate: [-5, 5, -5],
+            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <Plane className="w-16 h-16 mx-auto mb-6 text-white" />
+            <span className="text-6xl">🎉</span>
           </motion.div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Book Your Seat! 🎫
-          </h2>
+          <motion.h2
+            className="text-3xl md:text-5xl font-extrabold text-white mb-4 mt-4"
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            You're Invited! 🥳
+          </motion.h2>
 
-          <p className="text-sky-100 text-lg mb-8">
-            Don't miss this flight! Let us know if you'll be joining our journey.
+          <p className="text-white/90 text-lg md:text-xl mb-4 font-medium">
+            We would be SO HAPPY to have you join us! ✨
           </p>
 
+          <p className="text-white/80 text-base mb-8">
+            Please let us know if you can make it to Captain Lucas's epic first birthday bash!
+            <br />It's going to be AMAZING! 🚀
+          </p>
+
+          {/* Big exciting button */}
           <motion.a
-            href="mailto:rsvp@example.com?subject=RSVP for Captain Lucas's 1st Birthday - Booking Confirmed!"
-            className="inline-flex items-center gap-3 bg-white text-sky-600 font-bold text-xl px-8 py-4 rounded-full shadow-lg hover:bg-sky-50 transition-all"
-            whileHover={{ scale: 1.1 }}
+            href="mailto:Lyntut010@gmail.com?subject=🎉 Count Me In! RSVP for Captain Lucas's 1st Birthday!&body=Hi!%0A%0AI'm excited to confirm my attendance for Captain Lucas's 1st Birthday Party!%0A%0AName:%0ANumber of guests:%0A%0ACan't wait to celebrate! ✈️🎂"
+            className="inline-flex items-center gap-3 bg-white text-orange-600 font-extrabold text-xl px-10 py-5 rounded-full shadow-xl hover:bg-yellow-50 transition-all relative"
+            whileHover={{ scale: 1.1, rotate: [-1, 1, -1, 0] }}
             whileTap={{ scale: 0.95 }}
           >
-            <Ticket className="w-6 h-6" />
-            Book Your Ticket
+            <motion.span
+              animate={{ rotate: [0, 20, -20, 0] }}
+              transition={{ duration: 0.5, repeat: Infinity }}
+            >
+              🎫
+            </motion.span>
+            YES! I'll Be There!
+            <motion.span
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+            >
+              🎈
+            </motion.span>
           </motion.a>
 
-          <p className="text-sky-200 text-sm mt-6">
-            Or contact us at <span className="font-bold text-white">+63 XXX XXX XXXX</span>
-          </p>
+          {/* Alternative contact */}
+          <div className="mt-8 bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+            <p className="text-white text-sm mb-2">
+              📧 Email us: <span className="font-bold">Lyntut010@gmail.com</span>
+            </p>
+            <p className="text-white/80 text-sm">
+              📱 Or text/call: <span className="font-bold text-white">+63 XXX XXX XXXX</span>
+            </p>
+          </div>
+
+          {/* Fun footer message */}
+          <motion.p
+            className="text-white/90 text-sm mt-6 font-medium"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            ✨ Let's make this birthday LEGENDARY! ✨
+          </motion.p>
         </motion.div>
       </div>
     </motion.section>
@@ -937,6 +986,12 @@ const AudioPlayer = () => {
       setIsPlaying(!isPlaying);
     }
   };
+  const handleEnded = () => {
+    setIsPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <motion.div
@@ -945,7 +1000,7 @@ const AudioPlayer = () => {
       animate={{ scale: 1 }}
       transition={{ delay: 1, type: 'spring' }}
     >
-      <audio ref={audioRef} src="/assets/background-music.mp3" loop />
+      <audio ref={audioRef} src="/assets/background-music.mp3" onEnded={handleEnded} />
 
       {/* Cockpit toggle switch style */}
       <div className="relative">
