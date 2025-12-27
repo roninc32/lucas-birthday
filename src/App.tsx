@@ -852,6 +852,117 @@ const PhotoGrid = () => {
   );
 };
 
+// ============================================
+// FAMILY SECTION - Our Little Crew
+// ============================================
+const FamilySection = () => {
+  return (
+    <motion.section
+      className="py-16 px-4"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+    >
+      <div className="max-w-2xl mx-auto">
+        <motion.div
+          className="text-center mb-8"
+          initial={{ y: -20 }}
+          whileInView={{ y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-sky-800 mb-2">
+            💕 Our Little Crew 💕
+          </h2>
+          <p className="text-gray-600">The family behind Captain Lucas</p>
+        </motion.div>
+
+        <motion.div
+          className="relative"
+          initial={{ scale: 0.9, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          {/* Heart-shaped frame decoration */}
+          <div className="relative bg-gradient-to-br from-pink-50 to-sky-50 rounded-3xl p-6 md:p-8 shadow-xl border-2 border-pink-200 overflow-hidden">
+            {/* Floating hearts decoration */}
+            <div className="absolute inset-0 pointer-events-none">
+              {['💕', '✨', '💙', '🤍', '💕'].map((emoji, i) => (
+                <motion.span
+                  key={i}
+                  className="absolute text-xl opacity-40"
+                  style={{
+                    left: `${10 + i * 20}%`,
+                    top: `${5 + (i % 2) * 80}%`,
+                  }}
+                  animate={{
+                    y: [0, -10, 0],
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                  }}
+                >
+                  {emoji}
+                </motion.span>
+              ))}
+            </div>
+
+            {/* Family Photo Placeholder */}
+            <div className="relative z-10">
+              <motion.div
+                className="aspect-[4/3] bg-gradient-to-br from-sky-100 to-pink-100 rounded-2xl overflow-hidden border-4 border-white shadow-lg"
+                whileHover={{ scale: 1.02 }}
+              >
+                <img
+                  src="/assets/family-photo.jpg"
+                  alt="Lucas with Mom and Dad"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = `
+                      <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-sky-100 to-pink-100 p-8 text-center">
+                        <span class="text-6xl mb-4">👨‍👩‍👦</span>
+                        <p class="text-sky-600 font-medium text-lg">Family Photo</p>
+                        <p class="text-gray-500 text-sm mt-2">Add family-photo.jpg to /assets</p>
+                      </div>
+                    `;
+                  }}
+                />
+              </motion.div>
+            </div>
+
+            {/* Caption */}
+            <motion.div
+              className="mt-6 text-center relative z-10"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+            >
+              <p className="text-xl md:text-2xl font-bold text-sky-800 mb-3">
+                ✨ Our Greatest Adventure Yet ✨
+              </p>
+              <p className="text-gray-600 leading-relaxed text-base md:text-lg">
+                From the moment you arrived, you filled our hearts with endless love and joy.
+                Every smile, every giggle, every little milestone has been a treasure.
+              </p>
+              <p className="text-pink-600 font-medium mt-4 text-lg">
+                Thank you for making us <span className="font-bold">the happiest parents</span> in the world 💕
+              </p>
+              <p className="text-sky-700 font-bold mt-4 text-xl">
+                We love you to the moon and back, Captain Lucas! 🌙✈️
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+};
 
 // ============================================
 // RSVP SECTION - Book Your Seat (Playful & Enthusiastic)
@@ -1277,6 +1388,7 @@ function App() {
               <CountdownSection />
               <MessageSection />
               <PhotoGrid />
+              <FamilySection />
               <RSVPSection />
               <Footer />
             </main>
