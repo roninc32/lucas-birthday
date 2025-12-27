@@ -11,9 +11,7 @@ import {
   Music,
   Pause,
   Play,
-  Mail,
   Star,
-  Heart,
 } from 'lucide-react';
 
 // ============================================
@@ -694,8 +692,8 @@ const AudioPlayer = () => {
         <motion.button
           onClick={togglePlay}
           className={`w-16 h-16 rounded-full flex items-center justify-center shadow-xl transition-all ${isPlaying
-              ? 'bg-gradient-to-br from-green-400 to-green-600'
-              : 'bg-gradient-to-br from-gray-600 to-gray-800'
+            ? 'bg-gradient-to-br from-green-400 to-green-600'
+            : 'bg-gradient-to-br from-gray-600 to-gray-800'
             }`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
