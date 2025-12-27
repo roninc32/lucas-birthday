@@ -1076,7 +1076,7 @@ const Footer = () => {
         </p>
         <p className="text-gray-500">
           With love,{' '}
-          <span className="font-bold text-sky-700">The Gabbrione Family</span> 💙
+          <span className="font-bold text-sky-700">The Family</span> 💙
         </p>
 
         <div className="mt-8 pt-8 border-t border-gray-200">
