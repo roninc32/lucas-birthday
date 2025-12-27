@@ -505,6 +505,9 @@ const MessageSection = () => {
 // PHOTO GRID - 12 Months in the Sky
 // ============================================
 const PhotoGrid = () => {
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+
   const months = [
     { month: 'Month 1', icon: '👶' },
     { month: 'Month 2', icon: '🍼' },
@@ -520,78 +523,198 @@ const PhotoGrid = () => {
     { month: 'Month 12', icon: '🎉' },
   ];
 
+  const handleImageLoad = (index: number) => {
+    setLoadedImages((prev) => new Set(prev).add(index));
+  };
+
+  const handleImageError = (index: number) => {
+    setLoadedImages((prev) => {
+      const next = new Set(prev);
+      next.delete(index);
+      return next;
+    });
+  };
+
+  const openModal = (index: number) => {
+    if (loadedImages.has(index)) {
+      setSelectedImage(index);
+    }
+  };
+
+  const closeModal = () => setSelectedImage(null);
+
+  const navigateImage = (direction: 'prev' | 'next') => {
+    if (selectedImage === null) return;
+    let newIndex = direction === 'next' ? selectedImage + 1 : selectedImage - 1;
+
+    // Find next/prev loaded image
+    while (newIndex >= 0 && newIndex < 12) {
+      if (loadedImages.has(newIndex)) {
+        setSelectedImage(newIndex);
+        return;
+      }
+      newIndex = direction === 'next' ? newIndex + 1 : newIndex - 1;
+    }
+  };
+
   return (
-    <motion.section
-      className="py-12 px-4"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-    >
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-center text-sky-800 mb-4"
-          initial={{ y: -20 }}
-          whileInView={{ y: 0 }}
-          viewport={{ once: true }}
-        >
-          ☁️ 12 Months in the Sky ☁️
-        </motion.h2>
-        <p className="text-center text-gray-600 mb-12">
-          Captain Lucas's Flight Log
-        </p>
+    <>
+      <motion.section
+        className="py-12 px-4"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+      >
+        <div className="max-w-6xl mx-auto">
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold text-center text-sky-800 mb-4"
+            initial={{ y: -20 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true }}
+          >
+            ☁️ 12 Months in the Sky ☁️
+          </motion.h2>
+          <p className="text-center text-gray-600 mb-12">
+            Captain Lucas's Flight Log
+          </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-          {months.map((item, index) => (
-            <motion.div
-              key={item.month}
-              className="relative group"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.08 }}
-            >
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+            {months.map((item, index) => (
               <motion.div
-                className="aspect-square bg-gradient-to-br from-sky-50 to-white rounded-2xl overflow-hidden border-2 border-sky-200 shadow-lg"
-                whileHover={{ scale: 1.05, y: -5 }}
+                key={item.month}
+                className="relative group"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
               >
-                {/* Placeholder image */}
-                <img
-                  src={`/assets/month${index + 1}.jpg`}
-                  alt={item.month}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                  }}
-                />
-
-                {/* Placeholder content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-sky-50 to-sky-100">
-                  <Cloud className="w-8 h-8 text-sky-300 mb-2" fill="currentColor" />
-                  <span className="text-4xl mb-2">{item.icon}</span>
-                </div>
-
-                {/* Month overlay */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-sky-800/90 to-transparent p-3">
-                  <p className="text-white font-bold text-center text-sm">{item.month}</p>
-                </div>
-
-                {/* Corner cloud */}
                 <motion.div
-                  className="absolute -top-2 -right-2 text-white"
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 }}
+                  className={`aspect-square bg-gradient-to-br from-sky-50 to-white rounded-2xl overflow-hidden border-2 border-sky-200 shadow-lg ${loadedImages.has(index) ? 'cursor-pointer' : ''
+                    }`}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  onClick={() => openModal(index)}
                 >
-                  <Cloud className="w-8 h-6 drop-shadow-md" fill="currentColor" />
+                  {/* Actual image */}
+                  <img
+                    src={`/assets/month${index + 1}.jpg`}
+                    alt={item.month}
+                    className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-300 ${loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    onLoad={() => handleImageLoad(index)}
+                    onError={() => handleImageError(index)}
+                  />
+
+                  {/* Placeholder content - shown when no image */}
+                  <div
+                    className={`absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-sky-50 to-sky-100 transition-opacity duration-300 ${loadedImages.has(index) ? 'opacity-0' : 'opacity-100'
+                      }`}
+                  >
+                    <Cloud className="w-8 h-8 text-sky-300 mb-2" fill="currentColor" />
+                    <span className="text-4xl mb-2">{item.icon}</span>
+                  </div>
+
+                  {/* Month overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-sky-800/90 to-transparent p-3 z-20">
+                    <p className="text-white font-bold text-center text-sm">{item.month}</p>
+                  </div>
+
+                  {/* Click hint on hover */}
+                  {loadedImages.has(index) && (
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all z-15 flex items-center justify-center">
+                      <span className="opacity-0 group-hover:opacity-100 text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full transition-opacity">
+                        Click to view
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Corner cloud */}
+                  <motion.div
+                    className="absolute -top-2 -right-2 text-white z-30"
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 }}
+                  >
+                    <Cloud className="w-8 h-6 drop-shadow-md" fill="currentColor" />
+                  </motion.div>
                 </motion.div>
               </motion.div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </motion.section>
+      </motion.section>
+
+      {/* Modal Popup */}
+      <AnimatePresence>
+        {selectedImage !== null && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+          >
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+
+            {/* Modal Content */}
+            <motion.div
+              className="relative max-w-4xl max-h-[90vh] w-full"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', duration: 0.5 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Image */}
+              <img
+                src={`/assets/month${selectedImage + 1}.jpg`}
+                alt={months[selectedImage].month}
+                className="w-full h-auto max-h-[80vh] object-contain rounded-2xl shadow-2xl"
+              />
+
+              {/* Month label */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-sky-600 text-white px-6 py-2 rounded-full font-bold shadow-lg">
+                {months[selectedImage].month}
+              </div>
+
+              {/* Close button */}
+              <button
+                onClick={closeModal}
+                className="absolute -top-4 -right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
+              >
+                <span className="text-2xl text-gray-600">×</span>
+              </button>
+
+              {/* Navigation arrows */}
+              {selectedImage > 0 && [...loadedImages].some((i) => i < selectedImage) && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateImage('prev');
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+                >
+                  <span className="text-2xl text-gray-600">‹</span>
+                </button>
+              )}
+              {selectedImage < 11 && [...loadedImages].some((i) => i > selectedImage) && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateImage('next');
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors"
+                >
+                  <span className="text-2xl text-gray-600">›</span>
+                </button>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
+
 
 // ============================================
 // RSVP SECTION - Book Your Seat
