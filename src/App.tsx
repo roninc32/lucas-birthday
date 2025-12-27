@@ -277,7 +277,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          Captain Lucas
+          Captain Lucas Gabbrione
         </motion.h1>
         <motion.h2
           className="text-2xl md:text-4xl font-bold text-sky-600 mb-6"
