@@ -12,6 +12,7 @@ import {
   Pause,
   Play,
   Star,
+  Bird,
 } from 'lucide-react';
 
 // ============================================
@@ -425,6 +426,142 @@ const BoardingPass = () => {
 
           {/* Bottom stripe */}
           <div className="h-3 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400" />
+        </motion.div>
+      </div>
+    </motion.section>
+  );
+};
+
+// ============================================
+// COUNTDOWN SECTION - Time Until Takeoff
+// ============================================
+const CountdownSection = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    // Birthday party: January 20, 2026 at 3:00 PM
+    const targetDate = new Date('2026-01-20T15:00:00');
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = targetDate.getTime() - now.getTime();
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / (1000 * 60)) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const timeUnits = [
+    { label: 'Days', value: timeLeft.days, icon: '📅' },
+    { label: 'Hours', value: timeLeft.hours, icon: '⏰' },
+    { label: 'Minutes', value: timeLeft.minutes, icon: '⏱️' },
+    { label: 'Seconds', value: timeLeft.seconds, icon: '✈️' },
+  ];
+
+  return (
+    <motion.section
+      className="py-12 px-4"
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+    >
+      <div className="max-w-3xl mx-auto">
+        <motion.div
+          className="bg-gradient-to-br from-sky-600 to-sky-700 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden"
+          initial={{ y: 30 }}
+          whileInView={{ y: 0 }}
+          viewport={{ once: true }}
+        >
+          {/* Background clouds */}
+          <div className="absolute inset-0 pointer-events-none opacity-10">
+            {[...Array(4)].map((_, i) => (
+              <Cloud
+                key={i}
+                className="absolute text-white"
+                style={{
+                  left: `${i * 25}%`,
+                  top: `${20 + (i % 2) * 40}%`,
+                  width: '80px',
+                  height: '50px',
+                }}
+                fill="currentColor"
+              />
+            ))}
+          </div>
+
+          {/* Header */}
+          <div className="text-center mb-8 relative z-10">
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Plane className="w-12 h-12 mx-auto mb-4 text-white" />
+            </motion.div>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              ⏳ Time Until Takeoff ⏳
+            </h2>
+            <p className="text-sky-100 text-sm md:text-base">
+              Countdown to Captain Lucas's Big Day!
+            </p>
+          </div>
+
+          {/* Countdown Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+            {timeUnits.map((unit, index) => (
+              <motion.div
+                key={unit.label}
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center border border-white/20"
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <div className="text-2xl mb-2">{unit.icon}</div>
+                <motion.div
+                  key={unit.value}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  className="text-4xl md:text-5xl font-bold text-white mb-1"
+                  style={{ fontFamily: 'monospace' }}
+                >
+                  {String(unit.value).padStart(2, '0')}
+                </motion.div>
+                <div className="text-sky-200 text-sm uppercase tracking-wider font-semibold">
+                  {unit.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Flight status bar */}
+          <div className="mt-8 bg-white/10 rounded-full p-3 flex items-center justify-center gap-3 relative z-10">
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <Plane className="w-5 h-5 text-amber-400" />
+            </motion.div>
+            <span className="text-white font-semibold text-sm md:text-base">
+              Flight LUCAS-01 • Status: <span className="text-green-400">Boarding Soon</span>
+            </span>
+          </div>
         </motion.div>
       </div>
     </motion.section>
@@ -958,7 +1095,7 @@ function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
-            {/* Floating clouds background */}
+            {/* Floating clouds background - fixed to viewport */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden">
               {[...Array(5)].map((_, i) => (
                 <motion.div
@@ -985,10 +1122,104 @@ function App() {
               ))}
             </div>
 
+            {/* Flying Birds and Planes */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 5 }}>
+              {/* Bird 1 - Flying left to right */}
+              <motion.div
+                className="absolute"
+                style={{ top: '200px' }}
+                animate={{ x: ['-80px', 'calc(100vw + 80px)'] }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: 0 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -8, 4, -4, 0], rotate: [-5, 5, -5] }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Bird className="w-8 h-8 md:w-10 md:h-10 text-gray-600/60 drop-shadow" />
+                </motion.div>
+              </motion.div>
+
+              {/* Plane 1 - Flying right to left */}
+              <motion.div
+                className="absolute"
+                style={{ top: '450px' }}
+                animate={{ x: ['calc(100vw + 100px)', '-100px'] }}
+                transition={{ duration: 12, repeat: Infinity, ease: 'linear', delay: 0 }}
+              >
+                <motion.div
+                  animate={{ y: [0, 5, -3, 2, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Plane className="w-12 h-12 md:w-14 md:h-14 text-sky-600/50 drop-shadow-lg rotate-[168deg]" />
+                </motion.div>
+              </motion.div>
+
+              {/* Bird 2 - Flying right to left */}
+              <motion.div
+                className="absolute"
+                style={{ top: '700px' }}
+                animate={{ x: ['calc(100vw + 60px)', '-60px'] }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'linear', delay: 0 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -6, 5, -3, 0], rotate: [3, -3, 3] }}
+                  transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Bird className="w-7 h-7 md:w-9 md:h-9 text-gray-500/55 drop-shadow scale-x-[-1]" />
+                </motion.div>
+              </motion.div>
+
+              {/* Plane 2 - Flying left to right */}
+              <motion.div
+                className="absolute"
+                style={{ top: '1000px' }}
+                animate={{ x: ['-100px', 'calc(100vw + 100px)'] }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'linear', delay: 1 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -4, 3, -2, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Plane className="w-14 h-14 md:w-16 md:h-16 text-sky-500/55 drop-shadow-lg -rotate-12" />
+                </motion.div>
+              </motion.div>
+
+              {/* Bird 3 - Flying left to right */}
+              <motion.div
+                className="absolute"
+                style={{ top: '1350px' }}
+                animate={{ x: ['-70px', 'calc(100vw + 70px)'] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'linear', delay: 2 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -7, 5, -4, 0], rotate: [-4, 4, -4] }}
+                  transition={{ duration: 0.7, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Bird className="w-9 h-9 md:w-11 md:h-11 text-gray-600/50 drop-shadow" />
+                </motion.div>
+              </motion.div>
+
+              {/* Plane 3 - Flying right to left */}
+              <motion.div
+                className="absolute"
+                style={{ top: '1650px' }}
+                animate={{ x: ['calc(100vw + 100px)', '-100px'] }}
+                transition={{ duration: 11, repeat: Infinity, ease: 'linear', delay: 0 }}
+              >
+                <motion.div
+                  animate={{ y: [0, 4, -3, 2, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <Plane className="w-11 h-11 md:w-13 md:h-13 text-sky-600/50 drop-shadow-md rotate-[168deg]" />
+                </motion.div>
+              </motion.div>
+            </div>
+
             {/* Main Content */}
             <main className="relative z-10">
               <HeroSection />
               <BoardingPass />
+              <CountdownSection />
               <MessageSection />
               <PhotoGrid />
               <RSVPSection />
