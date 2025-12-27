@@ -228,7 +228,7 @@ const HeroSection = () => {
       <div className="max-w-2xl mx-auto text-center relative z-10">
         {/* Pilot Badge */}
         <motion.div
-          className="w-40 h-40 md:w-48 md:h-48 mx-auto mb-8 relative"
+          className="w-52 h-52 md:w-64 md:h-64 mx-auto mb-8 relative"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', delay: 0.3 }}
