@@ -25,171 +25,321 @@ interface EnvelopeProps {
 const AirmailEnvelope = ({ onOpen }: EnvelopeProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Rainbow colors for fun borders
+  const rainbowColors = ['#FF6B6B', '#FFE66D', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#FF6B6B'];
+
+  // Balloon colors - reduced for performance
+  const balloonColors = ['#FF6B6B', '#4ECDC4', '#A29BFE'];
+
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center z-50"
       style={{
-        background: 'linear-gradient(180deg, #87CEEB 0%, #B8E4F9 30%, #E8F4FD 60%, #FFFFFF 100%)',
+        background: 'linear-gradient(180deg, #87CEEB 0%, #FFE4EC 30%, #FFF5E6 60%, #E8F8FF 100%)',
       }}
     >
-      {/* Animated Clouds Background */}
+      {/* Floating Balloons */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
+        {balloonColors.map((color, i) => (
+          <motion.div
+            key={`balloon-${i}`}
+            className="absolute"
+            style={{
+              left: `${5 + i * 16}%`,
+              bottom: '-15%',
+            }}
+            animate={{
+              y: [0, -window.innerHeight * 1.3],
+              x: [0, Math.sin(i) * 30, 0],
+              rotate: [0, 10, -10, 0],
+            }}
+            transition={{
+              duration: 12 + i * 2,
+              repeat: Infinity,
+              delay: i * 1.5,
+              ease: 'easeOut',
+            }}
+          >
+            <div className="relative">
+              {/* Balloon */}
+              <div
+                className="w-12 h-14 md:w-16 md:h-20 rounded-full shadow-lg"
+                style={{
+                  background: `radial-gradient(circle at 30% 30%, ${color}dd, ${color})`,
+                  borderRadius: '50% 50% 50% 50% / 40% 40% 60% 60%',
+                }}
+              />
+              {/* Balloon tie */}
+              <div
+                className="w-0 h-0 mx-auto"
+                style={{
+                  borderLeft: '4px solid transparent',
+                  borderRight: '4px solid transparent',
+                  borderTop: `8px solid ${color}`,
+                }}
+              />
+              {/* String */}
+              <div className="w-px h-16 mx-auto bg-gray-400" style={{ marginTop: '-1px' }} />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Sparkle Stars - reduced for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={`sparkle-${i}`}
+            className="absolute text-yellow-400"
+            style={{
+              left: `${20 + i * 15}%`,
+              top: `${15 + i * 12}%`,
+              fontSize: '18px',
+            }}
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              delay: i * 0.8,
+            }}
+          >
+            ✨
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Clouds - reduced and slower for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute"
             style={{
-              left: `${-20 + i * 15}%`,
-              top: `${10 + (i % 3) * 25}%`,
+              left: `${i * 35}%`,
+              top: `${20 + i * 20}%`,
             }}
-            animate={{
-              x: [0, 100, 0],
-            }}
+            animate={{ x: [0, 40, 0] }}
             transition={{
-              duration: 20 + i * 5,
+              duration: 40,
               repeat: Infinity,
               ease: 'linear',
             }}
           >
             <Cloud
-              className="text-white/70"
-              style={{
-                width: `${60 + i * 20}px`,
-                height: `${40 + i * 15}px`,
-              }}
+              className="text-white drop-shadow-lg"
+              style={{ width: '80px', height: '50px' }}
               fill="currentColor"
             />
           </motion.div>
         ))}
       </div>
 
-      {/* Flying Plane Animation */}
+      {/* Confetti Dots - reduced and static for performance */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={`confetti-${i}`}
+            className="absolute rounded-full"
+            style={{
+              left: `${10 + i * 15}%`,
+              top: `${10 + (i % 3) * 30}%`,
+              width: '10px',
+              height: '10px',
+              backgroundColor: rainbowColors[i % rainbowColors.length],
+              opacity: 0.7,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Cute Flying Bird */}
       <motion.div
-        className="absolute"
-        initial={{ x: '-100%', y: '20%' }}
-        animate={{ x: '120%', y: '-10%' }}
+        className="absolute text-3xl"
+        initial={{ x: '-100%', y: '15%' }}
+        animate={{ x: '120%', y: '10%' }}
         transition={{
-          duration: 8,
+          duration: 10,
           repeat: Infinity,
           ease: 'linear',
         }}
       >
-        <Plane className="w-12 h-12 text-sky-600 -rotate-12" />
+        <Bird className="w-10 h-10 text-amber-500" />
       </motion.div>
 
-      {/* Main Airmail Envelope */}
+      {/* Happy Sun - static for performance */}
+      <div className="absolute top-8 right-8 md:top-16 md:right-16">
+        <div className="relative">
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-full shadow-lg flex items-center justify-center">
+            <span className="text-2xl md:text-3xl">😊</span>
+          </div>
+          {/* Static sun rays */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`ray-${i}`}
+              className="absolute w-2 h-6 bg-yellow-400 rounded-full"
+              style={{
+                left: '50%',
+                top: '50%',
+                transformOrigin: 'center -20px',
+                transform: `translateX(-50%) rotate(${i * 45}deg)`,
+                marginTop: '-30px',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Main Kiddie Envelope */}
       <motion.div
         className="relative cursor-pointer"
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         onClick={onOpen}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.95 }}
-        initial={{ scale: 0, rotate: -5 }}
+        initial={{ scale: 0, rotate: -10 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', duration: 0.8 }}
+        transition={{ type: 'spring', duration: 0.8, bounce: 0.5 }}
       >
         {/* Envelope Body */}
         <div className="relative w-80 h-52 md:w-96 md:h-64">
-          {/* Envelope Back */}
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-100 to-white rounded-lg shadow-2xl">
-            {/* Par Avion Border - Red and Blue stripes */}
-            <div className="absolute inset-0 rounded-lg overflow-hidden">
-              {/* Top border */}
-              <div className="absolute top-0 left-0 right-0 h-4 flex">
-                {[...Array(20)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 ${i % 2 === 0 ? 'bg-red-500' : 'bg-blue-600'}`}
-                    style={{ transform: 'skewX(-15deg)' }}
-                  />
-                ))}
-              </div>
-              {/* Bottom border */}
-              <div className="absolute bottom-0 left-0 right-0 h-4 flex">
-                {[...Array(20)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 ${i % 2 === 0 ? 'bg-blue-600' : 'bg-red-500'}`}
-                    style={{ transform: 'skewX(-15deg)' }}
-                  />
-                ))}
-              </div>
-              {/* Left border */}
-              <div className="absolute top-4 bottom-4 left-0 w-4 flex flex-col">
-                {[...Array(12)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 ${i % 2 === 0 ? 'bg-red-500' : 'bg-blue-600'}`}
-                    style={{ transform: 'skewY(-15deg)' }}
-                  />
-                ))}
-              </div>
-              {/* Right border */}
-              <div className="absolute top-4 bottom-4 right-0 w-4 flex flex-col">
-                {[...Array(12)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 ${i % 2 === 0 ? 'bg-blue-600' : 'bg-red-500'}`}
-                    style={{ transform: 'skewY(-15deg)' }}
-                  />
-                ))}
-              </div>
-            </div>
+          {/* Envelope Back/Base */}
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-50 to-amber-100 rounded-lg shadow-2xl border-2 border-amber-200">
+            {/* Inner envelope fold lines (V shape at bottom) */}
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 260" preserveAspectRatio="none">
+              <path
+                d="M0,0 L200,120 L400,0"
+                fill="none"
+                stroke="#E5D3B3"
+                strokeWidth="2"
+                opacity="0.5"
+              />
+            </svg>
+
+            {/* Colorful border stripe - top */}
+            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-t-lg" />
+
+            {/* Colorful border stripe - bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-b-lg" />
 
             {/* Envelope Center Content */}
-            <div className="absolute inset-6 flex flex-col items-center justify-center">
-              {/* PAR AVION stamp */}
-              <div className="bg-blue-600 text-white px-4 py-1 rounded text-sm font-bold tracking-wider mb-4 shadow-md">
-                ✈ PAR AVION
-              </div>
-
-              {/* Stamp */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
+              {/* Party Badge */}
               <motion.div
-                className="w-16 h-20 bg-gradient-to-br from-sky-100 to-sky-200 border-2 border-dashed border-sky-400 rounded flex flex-col items-center justify-center"
-                animate={isHovered ? { rotate: [0, -5, 5, 0] } : {}}
+                className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white px-5 py-2 rounded-full text-sm font-bold tracking-wider mb-4 shadow-lg"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                🎉 PARTY TIME! 🎉
+              </motion.div>
+
+              {/* Birthday Cake Stamp */}
+              <motion.div
+                className="w-20 h-24 bg-gradient-to-br from-pink-50 to-purple-50 border-4 border-dashed border-pink-300 rounded-lg flex flex-col items-center justify-center shadow-lg"
+                animate={isHovered ? { rotate: [0, -5, 5, 0], scale: [1, 1.08, 1] } : {}}
                 transition={{ duration: 0.5 }}
               >
-                <Plane className="w-8 h-8 text-sky-600 mb-1" />
-                <span className="text-xs font-bold text-sky-700">2026</span>
+                <span className="text-4xl mb-1">🎂</span>
+                <span className="text-sm font-extrabold text-pink-600 bg-yellow-200 px-2 rounded">1st</span>
               </motion.div>
             </div>
           </div>
 
-          {/* Envelope Flap */}
+          {/* Envelope Flap - Triangle that opens */}
           <motion.div
-            className="absolute -top-1 left-0 right-0 h-28 md:h-32 origin-bottom"
-            animate={isHovered ? { rotateX: -30 } : { rotateX: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{ perspective: '1000px' }}
+            className="absolute -top-1 left-0 right-0 h-32 md:h-36 origin-bottom"
+            animate={isHovered ? { rotateX: -20 } : { rotateX: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            style={{
+              perspective: '800px',
+              transformStyle: 'preserve-3d'
+            }}
           >
-            <svg viewBox="0 0 400 130" className="w-full h-full">
+            <svg viewBox="0 0 400 140" className="w-full h-full drop-shadow-md" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="flapGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#E5E7EB" />
-                  <stop offset="100%" stopColor="#F9FAFB" />
+                <linearGradient id="kiddieFlap" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stopColor="#FEF3E2" />
+                  <stop offset="50%" stopColor="#FFE4EC" />
+                  <stop offset="100%" stopColor="#E8F4FD" />
                 </linearGradient>
               </defs>
+              {/* Main flap triangle */}
               <path
-                d="M0,130 L200,30 L400,130 Z"
-                fill="url(#flapGradient)"
-                stroke="#D1D5DB"
+                d="M0,140 L200,20 L400,140 Z"
+                fill="url(#kiddieFlap)"
+                stroke="#E5D3B3"
                 strokeWidth="2"
               />
-              {/* Red/Blue edge on flap */}
-              <path d="M0,130 L200,30 L400,130" fill="none" stroke="#EF4444" strokeWidth="4" />
+              {/* Decorative colorful edge on flap */}
+              <path
+                d="M0,140 L200,20 L400,140"
+                fill="none"
+                stroke="url(#rainbowEdge)"
+                strokeWidth="4"
+              />
+              <defs>
+                <linearGradient id="rainbowEdge" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#FF6B6B" />
+                  <stop offset="25%" stopColor="#FFE66D" />
+                  <stop offset="50%" stopColor="#4ECDC4" />
+                  <stop offset="75%" stopColor="#45B7D1" />
+                  <stop offset="100%" stopColor="#DDA0DD" />
+                </linearGradient>
+              </defs>
             </svg>
+
+            {/* Heart seal on flap */}
+            <div className="absolute top-12 left-1/2 -translate-x-1/2">
+              <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
+                <span className="text-2xl">💌</span>
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        {/* Call to action text */}
-        <motion.p
-          className="mt-8 text-center text-lg md:text-xl font-bold text-sky-800"
-          animate={{ y: [0, -5, 0] }}
+        {/* Bouncing decorations around envelope */}
+        <motion.div
+          className="absolute -top-6 -left-6 text-3xl"
+          animate={{ y: [0, -10, 0], rotate: [0, 15, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          ✈️ Click to Open Your Invitation! ✈️
-        </motion.p>
+          🎈
+        </motion.div>
+        <motion.div
+          className="absolute -top-4 -right-6 text-3xl"
+          animate={{ y: [0, -10, 0], rotate: [0, -15, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, delay: 0.3 }}
+        >
+          ⭐
+        </motion.div>
+        <motion.div
+          className="absolute -bottom-4 -left-4 text-2xl"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          🎀
+        </motion.div>
+        <motion.div
+          className="absolute -bottom-4 -right-4 text-2xl"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 1.2, repeat: Infinity, delay: 0.5 }}
+        >
+          🍭
+        </motion.div>
+
+        {/* Call to action text - More playful */}
+        <motion.div
+          className="mt-10 text-center"
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <p className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent drop-shadow-sm">
+            🎁 Tap to Open! 🎁
+          </p>
+          <p className="text-sm text-pink-600 font-semibold mt-2">
+            ✨ A special surprise awaits! ✨
+          </p>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -387,8 +537,8 @@ const BoardingPass = () => {
                 <div className="col-span-2 flex items-center gap-3 bg-sky-50 p-3 rounded-lg">
                   <MapPin className="w-5 h-5 text-sky-500" />
                   <div>
-                    <p className="text-xs text-gray-500">Gate / Location</p>
-                    <p className="font-bold text-sky-800">Pangasinan City</p>
+                    <p className="text-xs text-gray-500">Location</p>
+                    <p className="font-bold text-sky-800">Hotel Trish</p>
                   </div>
                 </div>
               </div>
@@ -712,7 +862,7 @@ const PhotoGrid = () => {
             ☁️ 12 Months in the Sky ☁️
           </motion.h2>
           <p className="text-center text-gray-600 mb-12">
-            Captain Lucas's Flight Log
+            Captain Lucas's Flight`s Journey
           </p>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
@@ -1060,9 +1210,6 @@ const RSVPSection = () => {
           <div className="mt-8 bg-white/20 backdrop-blur-sm rounded-2xl p-4">
             <p className="text-white text-sm mb-2">
               📧 Email us: <span className="font-bold">Lyntut010@gmail.com</span>
-            </p>
-            <p className="text-white/80 text-sm">
-              📱 Or text/call: <span className="font-bold text-white">+63 XXX XXX XXXX</span>
             </p>
           </div>
 
