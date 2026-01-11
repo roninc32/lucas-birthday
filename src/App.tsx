@@ -22,8 +22,7 @@ interface EnvelopeProps {
   onOpen: () => void;
 }
 
-const AirmailEnvelope = ({ onOpen }: EnvelopeProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+const BirthdayCard = ({ onOpen }: EnvelopeProps) => {
 
   // Rainbow colors for fun borders
   const rainbowColors = ['#FF6B6B', '#FFE66D', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#FF6B6B'];
@@ -189,115 +188,85 @@ const AirmailEnvelope = ({ onOpen }: EnvelopeProps) => {
         </div>
       </div>
 
-      {/* Main Kiddie Envelope */}
+      {/* Birthday Invitation Card */}
       <motion.div
         className="relative cursor-pointer"
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
         onClick={onOpen}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ scale: 0, rotate: -10 }}
+        whileHover={{ scale: 1.02, y: -5 }}
+        whileTap={{ scale: 0.98 }}
+        initial={{ scale: 0, rotate: -5 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', duration: 0.8, bounce: 0.5 }}
+        transition={{ type: 'spring', duration: 0.8, bounce: 0.4 }}
       >
-        {/* Envelope Body */}
-        <div className="relative w-80 h-52 md:w-96 md:h-64">
-          {/* Envelope Back/Base */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-50 to-amber-100 rounded-lg shadow-2xl border-2 border-amber-200">
-            {/* Inner envelope fold lines (V shape at bottom) */}
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 260" preserveAspectRatio="none">
-              <path
-                d="M0,0 L200,120 L400,0"
-                fill="none"
-                stroke="#E5D3B3"
-                strokeWidth="2"
-                opacity="0.5"
-              />
-            </svg>
+        {/* Card */}
+        <div className="relative w-80 h-96 md:w-96 md:h-[28rem] bg-gradient-to-b from-pink-100 via-purple-50 to-blue-100 rounded-3xl shadow-2xl border-4 border-white overflow-hidden">
 
-            {/* Colorful border stripe - top */}
-            <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-t-lg" />
+          {/* Colorful top border */}
+          <div className="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400" />
 
-            {/* Colorful border stripe - bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-b-lg" />
-
-            {/* Envelope Center Content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
-              {/* Party Badge */}
-              <motion.div
-                className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white px-5 py-2 rounded-full text-sm font-bold tracking-wider mb-4 shadow-lg"
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                🎉 PARTY TIME! 🎉
-              </motion.div>
-
-              {/* Birthday Cake Stamp */}
-              <motion.div
-                className="w-20 h-24 bg-gradient-to-br from-pink-50 to-purple-50 border-4 border-dashed border-pink-300 rounded-lg flex flex-col items-center justify-center shadow-lg"
-                animate={isHovered ? { rotate: [0, -5, 5, 0], scale: [1, 1.08, 1] } : {}}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="text-4xl mb-1">🎂</span>
-                <span className="text-sm font-extrabold text-pink-600 bg-yellow-200 px-2 rounded">1st</span>
-              </motion.div>
+          {/* Decorative corner ribbons */}
+          <div className="absolute top-0 right-0 w-20 h-20 overflow-hidden">
+            <div className="absolute top-4 -right-8 w-32 h-6 bg-gradient-to-r from-yellow-400 to-amber-400 rotate-45 shadow-md flex items-center justify-center">
+              <span className="text-xs font-bold text-white">✨ VIP ✨</span>
             </div>
           </div>
 
-          {/* Envelope Flap - Triangle that opens */}
-          <motion.div
-            className="absolute -top-1 left-0 right-0 h-32 md:h-36 origin-bottom"
-            animate={isHovered ? { rotateX: -20 } : { rotateX: 0 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{
-              perspective: '800px',
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            <svg viewBox="0 0 400 140" className="w-full h-full drop-shadow-md" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="kiddieFlap" x1="0%" y1="100%" x2="0%" y2="0%">
-                  <stop offset="0%" stopColor="#FEF3E2" />
-                  <stop offset="50%" stopColor="#FFE4EC" />
-                  <stop offset="100%" stopColor="#E8F4FD" />
-                </linearGradient>
-              </defs>
-              {/* Main flap triangle */}
-              <path
-                d="M0,140 L200,20 L400,140 Z"
-                fill="url(#kiddieFlap)"
-                stroke="#E5D3B3"
-                strokeWidth="2"
-              />
-              {/* Decorative colorful edge on flap */}
-              <path
-                d="M0,140 L200,20 L400,140"
-                fill="none"
-                stroke="url(#rainbowEdge)"
-                strokeWidth="4"
-              />
-              <defs>
-                <linearGradient id="rainbowEdge" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FF6B6B" />
-                  <stop offset="25%" stopColor="#FFE66D" />
-                  <stop offset="50%" stopColor="#4ECDC4" />
-                  <stop offset="75%" stopColor="#45B7D1" />
-                  <stop offset="100%" stopColor="#DDA0DD" />
-                </linearGradient>
-              </defs>
-            </svg>
+          {/* Card Content */}
+          <div className="flex flex-col items-center justify-center h-full px-6 py-8">
 
-            {/* Heart seal on flap */}
-            <div className="absolute top-12 left-1/2 -translate-x-1/2">
-              <div className="w-14 h-14 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
-                <span className="text-2xl">💌</span>
+            {/* Top decoration */}
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-2xl">🎈</span>
+              <span className="text-2xl">🎉</span>
+              <span className="text-2xl">🎈</span>
+            </div>
+
+            {/* You're Invited text */}
+            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mb-2">
+              You're Invited!
+            </h2>
+
+            {/* To text */}
+            <p className="text-gray-500 text-sm mb-4">to celebrate</p>
+
+            {/* Birthday Cake */}
+            <div className="relative mb-4">
+              <div className="w-24 h-28 bg-gradient-to-br from-pink-50 to-purple-100 border-4 border-dashed border-pink-300 rounded-2xl flex flex-col items-center justify-center shadow-lg">
+                <span className="text-5xl mb-1">🎂</span>
+                <span className="text-sm font-extrabold text-pink-600 bg-yellow-200 px-3 py-0.5 rounded-full">1st</span>
               </div>
             </div>
-          </motion.div>
+
+            {/* Captain Lucas text */}
+            <h3 className="text-xl md:text-2xl font-bold text-sky-700 mb-1">
+              Captain Lucas's
+            </h3>
+            <p className="text-lg font-semibold text-purple-600 mb-6">
+              1st Birthday! 🛫
+            </p>
+
+            {/* Party Badge */}
+            <motion.div
+              className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white px-6 py-2 rounded-full text-sm font-bold tracking-wider shadow-lg"
+              animate={{ scale: [1, 1.03, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              🎉 PARTY TIME! 🎉
+            </motion.div>
+
+            {/* Bottom decoration */}
+            <div className="flex items-center gap-3 mt-6">
+              <span className="text-xl">⭐</span>
+              <span className="text-xl">🎀</span>
+              <span className="text-xl">⭐</span>
+            </div>
+          </div>
+
+          {/* Colorful bottom border */}
+          <div className="absolute bottom-0 left-0 right-0 h-3 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400" />
         </div>
 
-        {/* Bouncing decorations around envelope */}
+        {/* Bouncing decorations around card */}
         <motion.div
           className="absolute -top-6 -left-6 text-3xl"
           animate={{ y: [0, -10, 0], rotate: [0, 15, 0] }}
@@ -1371,7 +1340,7 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleEnvelopeOpen = () => {
+  const handleCardOpen = () => {
     setIsEnvelopeOpen(true);
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 8000);
@@ -1395,9 +1364,9 @@ function App() {
         />
       )}
 
-      {/* Envelope (Initial State) */}
+      {/* Birthday Card (Initial State) */}
       <AnimatePresence>
-        {!isEnvelopeOpen && <AirmailEnvelope onOpen={handleEnvelopeOpen} />}
+        {!isEnvelopeOpen && <BirthdayCard onOpen={handleCardOpen} />}
       </AnimatePresence>
 
       {/* Main Invitation Content */}
